@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "idl2ruby"
+require "optparse"
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: idl2ruby [options]"
+
+  opts.on("-i", "--input FILE", "Input IDL JSON file") do |file|
+    options[:input] = file
+  end
+
+  opts.on("-o", "--output DIR", "Output directory for generated Ruby files") do |dir|
+    options[:output] = dir
+  end
+end.parse!
+
+if options[:input].nil? || options[:output].nil?
+  puts "Error: Both input file and output directory are required."
+  exit 1
+end
+
+idl_json = File.read(options[:input])
+generated_code = Idl2Ruby.generate(idl_json)
+
+output_file = File.join(options[:output], "#{File.basename(options[:input], '.*')}.rb")
+File.write(output_file, generated_code)
+
+puts "Ruby code generated successfully: #{output_file}"

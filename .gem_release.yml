@@ -1,0 +1,4 @@
+bump:
+  file: lib/idl2ruby/version.rb
+  skip_ci: true
+
